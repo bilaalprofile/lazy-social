@@ -1,0 +1,140 @@
+{% extends 'social_app/base.html' %}
+{% load static %}
+
+{% block content %}
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Adda - Social Network HTML Template</title>
+    <meta name="robots" content="noindex, follow" />
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.ico">
+
+    <!-- CSS
+	============================================ -->
+    <!-- google fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i,900" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'social_app/css/vendor/bootstrap.min.css' %}">
+    <!-- Icon Font CSS -->
+    <link rel="stylesheet" href="{% static 'social_app/css/vendor/bicon.min.css' %}">
+    <!-- Flat Icon CSS -->
+    <link rel="stylesheet" href="{% static 'social_app/css/vendor/flaticon.css' %}">
+    <!-- audio & video player CSS -->
+    <link rel="stylesheet" href="{% static 'social_app/css/plugins/plyr.css' %}">
+    <!-- Slick CSS -->
+    <link rel="stylesheet" href="{% static 'social_app/css/plugins/slick.min.css' %}">
+    <!-- nice-select CSS -->
+    <link rel="stylesheet" href="{% static 'social_app/css/plugins/nice-select.css' %}">
+    <!-- perfect scrollbar css -->
+    <link rel="stylesheet" href="{% static 'social_app/css/plugins/perfect-scrollbar.css' %}">
+    <!-- light gallery css -->
+    <link rel="stylesheet" href="{% static 'social_app/css/plugins/lightgallery.min.css' %}">
+    <!-- Main Style CSS -->
+    <link rel="stylesheet" href="{% static 'social_app/css/style.css' %}">
+
+</head>
+
+<body class="bg-transparent">
+
+    <main class=''>
+        <div class="main-wrapper pb-0 mb-0">
+            <div class="timeline-wrapper overflow-hidden">
+                <div class="timeline-page-wrapper">
+                    <div class="container-fluid p-0">
+                        <div class="row g-0">
+                            <div class="col-lg-6 order-1 order-lg-2 d-flex align-items-center justify-content-center">
+                                <div class="signup-form-wrapper ">
+                                    <h1 class="create-acc text-center">{{message}}</h1>
+                                    <div class="signup-inner text-center">
+                                        <h3 class="title">Wellcome to BeFly</h3>
+                                        <form method="POST" class="signup-inner--form">
+                                            {% csrf_token %}
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <input type="text" name='username' class="single-field" placeholder="Username">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <input type="text" name='first_name' class="single-field" placeholder="First Name">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <input type="text" name='last_name' class="single-field" placeholder="Last Name">
+                                                </div>
+                                                <div class="col-12">
+                                                    <input type="password" name='password' class="single-field" placeholder="Password">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <select class="nice-select" name="gender">
+                                                        <option value="trending">Gender</option>
+                                                        <option value="sales">Male</option>
+                                                        <option value="sales">Female</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <select class="nice-select" name="age">
+                                                        <option value="trending">Age</option>
+                                                        <option value="sales">18+</option>
+                                                        <option value="sales">18-</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-12">
+                                                    <select class="nice-select" name="country">
+                                                        <option value="trending">Country</option>
+                                                        <option value="sales">Bangladesh</option>
+                                                        <option value="sales">pakistan</option>
+                                                        <option value="sales">Australia</option>
+                                                        <option value="sales">China</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-12">
+                                                    <button class="submit-btn" type='submit'>Create Account</button>
+                                                </div>
+                                            </div>
+                                            <h6 class="terms-condition">Already have account <a href="{% url 'login_user' %}">Login</a></h6>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- JS
+============================================ -->
+
+    <!-- Modernizer JS -->
+    <script src="{% static 'social_app/js/vendor/modernizr-3.6.0.min.js' %}"></script>
+    <!-- jQuery JS -->
+    <script src="{% static 'social_app/js/vendor/jquery-3.6.0.min.js' %}"></script>
+    <!-- Bootstrap JS -->
+    <script src="{% static 'social_app/js/vendor/bootstrap.bundle.min.js' %}"></script>
+    <!-- Slick Slider JS -->
+    <script src="{% static 'social_app/js/plugins/slick.min.js' %}"></script>
+    <!-- nice select JS -->
+    <script src="{% static 'social_app/js/plugins/nice-select.min.js' %}"></script>
+    <!-- audio video player JS -->
+    <script src="{% static 'social_app/js/plugins/plyr.min.js' %}"></script>
+    <!-- perfect scrollbar js -->
+    <script src="{% static 'social_app/js/plugins/perfect-scrollbar.min.js' %}"></script>
+    <!-- light gallery js -->
+    <script src="{% static 'social_app/js/plugins/perfect-scrollbar.min.js' %}"></script>
+    <!-- image loaded js -->
+    <script src="{% static 'social_app/js/plugins/imagesloaded.pkgd.min.js' %} "></script>
+    <!-- isotope filter js -->
+    <script src="{% static 'social_app/js/plugins/isotope.pkgd.min.js' %} "></script>
+    <!-- Main JS -->
+    {% comment %} <script src="{% static 'social_app/js/main.js' %} "></script> {% endcomment %}
+
+</body>
+
+</html>
+{% endblock content %}
+    

@@ -1,0 +1,81 @@
+<div class="share-box-inner">
+	<!-- profile picture end -->
+	<div class="profile-thumb">
+		<a href="#">
+			<figure class="profile-thumb-middle">
+				<img
+					src="{% if profile.image %}{{profile.image.url}}{% endif %}"
+					alt="profile picture" />
+			</figure>
+		</a>
+	</div>
+	<!-- profile picture end -->
+
+	<!-- share content box start -->
+	<div class="share-content-box w-100">
+		<form class="share-text-box">
+			<textarea
+				name="share"
+				class="share-text-field"
+				aria-disabled="true"
+				placeholder="Say Something"
+				data-bs-toggle="modal"
+				data-bs-target="#textbox"
+				id="email"></textarea>
+			<button
+				type="button"
+				class="btn-share"
+				data-bs-toggle="modal"
+				data-bs-target="#textbox">
+				share
+			</button>
+		</form>
+	</div>
+	<!-- share content box end -->
+	<!-- Modal start -->
+	<div class="modal fade" id="textbox" aria-labelledby="textbox">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Share Your Mood</h5>
+					<button
+						type="button"
+						class="close"
+						data-bs-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<form
+					method="post"
+					enctype="multipart/form-data"
+					action="{% url 'add_post' %}">
+					{% csrf_token %}
+					<div class="modal-body custom-scroll">
+						<textarea
+							name="body"
+							class="share-field-big custom-scroll"
+							placeholder="Say Something"></textarea>
+						<input
+							type="file"
+							name="image"
+							class="form-control"
+							accept="image/*" />
+					</div>
+					<div class="modal-footer">
+						<button
+							type="button"
+							class="post-share-btn"
+							data-bs-dismiss="modal">
+							cancel
+						</button>
+						<button type="submit" class="post-share-btn">
+							post
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<!-- Modal end -->
+</div>
