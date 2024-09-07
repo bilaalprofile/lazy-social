@@ -4,8 +4,13 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import User
 from .models import (
     Profile,
-    Post
+    Post,
+    Like,
+    Comment,
+    Group
 )
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 
 
 # Create your views here.
@@ -13,14 +18,24 @@ from .models import (
 @login_required
 def index(request):
     profile = Profile.objects.filter(user=request.user).first()
+    groups = Group.objects.all()
     posts = Post.objects.order_by('-created_at')
-    return render(request, 'social_app/index.html', {'profile': profile, 'posts': posts})
+    for post in posts:
+        post.liked_by_user = post.is_liked_by_user(request.user)
+    context = {
+        'posts': posts,
+        'profile': profile,
+        'groups': groups,
+    }
+    return render(request, 'social_app/index.html', context)
 
 
 @login_required
 def profile(request):
     profile = Profile.objects.filter(user=request.user).first()
     posts = Post.objects.filter(user=request.user).order_by('-created_at')
+    for post in posts:
+        post.liked_by_user = post.is_liked_by_user(request.user)
     if request.method == 'POST':
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
@@ -40,6 +55,7 @@ def profile(request):
     context = {
         "profile": profile,
         "posts": posts,
+
     }
     return render(request, 'social_app/profile.html', context)
 
@@ -56,9 +72,84 @@ def add_post(request):
 
 
 @login_required
+def edit_post(request):
+    print(request.POST)
+    if request.method == 'POST':
+        id = request.POST.get('id')
+        page = request.POST.get('page')
+        post = Post.objects.get(id=id)
+        post.body = request.POST.get('body')
+        post.image = request.FILES.get('image')
+        post.save()
+        return redirect(page)
+
+
+@login_required
 def delete_post(request, page, pk):
     Post.objects.get(id=pk).delete()
     return redirect(page)
+
+
+@login_required
+def post_like(request):
+    post_id = request.GET.get('id')
+    post = get_object_or_404(Post, id=post_id)
+    user = request.user
+
+    # Check if the user has already liked the post
+    liked = False
+    like = Like.objects.filter(user=user, post=post).first()
+
+    if like:
+        like.delete()
+        message = "You unliked this post."
+    else:
+        Like.objects.create(user=user, post=post)
+        liked = True
+        message = "You liked this post."
+
+    response_data = {
+        "liked": liked,
+        "total_likes": post.likes.count(),
+        "message": message,
+    }
+
+    return JsonResponse(response_data)
+
+
+def post_comments(request):
+    post_id = request.POST.get('post_id')
+    post = get_object_or_404(Post, id=post_id)
+    body = request.POST.get('comment')
+    image = request.FILES.get('image')
+    print(request.POST)
+    if body or image:
+        Comment.objects.create(
+            post=post,
+            body=body,
+            image=image
+        )
+    else:
+        pass
+    return redirect('index')
+
+
+def fetch_comments(request):
+    post_id = request.GET.get('id')
+    post = get_object_or_404(Post, id=post_id)
+    comments = post.comments.all()
+    comments_list = [
+        {
+            'id': comment.id,
+            'body': comment.body,
+            'image': comment.image.url if comment.image else '',
+            'username': post.user.username,
+            'profile_image': post.user.profile.image.url if post.user.profile.image else '',
+            'created_at': comment.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+        }
+        for comment in comments
+    ]
+    return JsonResponse({'status': 'success', 'comments': comments_list, 'total_comments': comments.count()})
 
 
 def settings(request):

@@ -182,7 +182,7 @@
 	});
 
 	// nice select active js
-	$('select').niceSelect();
+	// $('select').niceSelect();
 
 	// Scroll to top active js
 	$(window).on('scroll', function () {

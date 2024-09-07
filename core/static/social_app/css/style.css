@@ -1779,8 +1779,8 @@ only screen and (max-width: 767.98px) {
 .post-comment span,
 .post-share span {
     color: #666666;
-    vertical-align: text-bottom;
-    padding-left: 8px;
+    /* vertical-align: text-bottom; */
+    padding-left: 4px;
 }
 
 .post-meta-like:hover i,

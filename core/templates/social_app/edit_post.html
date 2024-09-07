@@ -1,0 +1,45 @@
+<div class="modal fade" id="edit_post" aria-labelledby="edit_post">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Edit Your Post</h5>
+				<button
+					type="button"
+					class="close"
+					data-bs-dismiss="modal"
+					aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<form
+				method="post"
+				enctype="multipart/form-data"
+                action="{% url 'edit_post' %}">
+				{% csrf_token %}
+                <input type="hidden" name="id" id="edit_post_id">
+                <input type="hidden" name="page" id="edit_post_page">
+				<div class="modal-body custom-scroll">
+					<textarea
+						name="body"
+						class="share-field-big custom-scroll"
+                        id="edit_post_body"
+						placeholder="Say Something"></textarea>
+					<input
+						type="file"
+						name="image"
+						class="form-control"
+						accept="image/*" />
+				</div>
+				<div class="modal-footer">
+					<button
+						type="button"
+						class="post-share-btn"
+						data-bs-dismiss="modal">
+						cancel
+					</button>
+					<button type="submit" class="post-share-btn">post</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

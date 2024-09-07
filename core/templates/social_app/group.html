@@ -1,0 +1,445 @@
+{% extends 'social_app/base.html' %}
+{% load static %}
+
+{% block content %}   
+<main>
+    <div class="main-wrapper">
+        <div class="profile-banner-large bg-img" data-bg="{% static 'social_app/images/coustom/photo1.jpg' %}">
+        </div>profile-banner
+        <div class="profile-menu-area bg-white">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-3 col-md-3">
+                        <div class="profile-picture-box">
+                            <figure class="profile-picture">
+                                <a href="profile.html">
+                                    <img class="img-fluid" style="height:270px; width:270px; object-fit: cover;" src="{% if profile.image %}{{profile.image.url}}{% endif %}" alt="profile picture">
+                                </a>
+                            </figure>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 offset-lg-1">
+                        <div class="profile-menu-wrapper">
+                            <div class="main-menu-inner header-top-navigation">
+                                <nav>
+                                    <ul class="main-menu">
+                                        <li class="active"><a href="#">timeline</a></li>
+                                        <li><a href="about.html">about</a></li>
+                                        <li><a href="photos.html">photos</a></li>
+                                        <li><a href="friends.html">friends</a></li>
+                                        <li><a href="about.html">more</a></li>
+                                        <!-- <li class="d-inline-block d-md-none"><a href="profile.html">edit profile</a></li> -->
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-3 d-none d-md-block">
+                        <div class="profile-edit-panel">
+                            <button class="edit-btn" data-bs-toggle="modal" data-bs-target="#exampleModal">Update Profile</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 order-2 order-lg-1">
+                    <aside class="widget-area profile-sidebar">
+                        <!-- widget single item start -->
+                        <div class="card widget-item">
+                            <h4 class="widget-title">{{profile.full_name}}</h4>
+                            <div class="widget-body">
+                                <div class="about-author">
+                                    <p>I Don’t know how? But i believe that it is possible one day if i stay with my dream all time</p>
+                                    <ul class="author-into-list">
+                                        <li><a href="#"><i class="bi bi-office-bag"></i>Web Developer</a></li>
+                                        <li><a href="#"><i class="bi bi-home"></i>Melbourne, Australia</a></li>
+                                        <li><a href="#"><i class="bi bi-location-pointer"></i>Pulshar, Melbourne</a></li>
+                                        <li><a href="#"><i class="bi bi-heart-beat"></i>Travel, Swimming</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- widget single item end -->
+
+                        <!-- widget single item start -->
+                        <div class="card widget-item">
+                            <h4 class="widget-title">Sweets Memories</h4>
+                          
+                        </div>
+                        <!-- widget single item end -->
+
+                        <!-- widget single item start -->
+                        <div class="card widget-item">
+                            <h4 class="widget-title">page you may like</h4>
+                            
+                        </div>
+                        <!-- widget single item end -->
+                    </aside>
+                </div>
+
+                <div class="col-lg-6 order-1 order-lg-2">
+                    <!-- share box start -->
+                    <div class="card card-small">
+                        {% include 'social_app/sharer.html' %}
+                    </div>
+                    <!-- share box end -->
+                    
+                    {% for post in posts %}
+                    <!-- post status start -->
+                    <div class="card">
+                        <!-- post title start -->
+                        <div class="post-title d-flex align-items-center">
+                            <!-- profile picture end -->
+                            <div class="profile-thumb">
+                                <a href="#">
+                                    <figure class="profile-thumb-middle">
+                                        <img style="height:100%; width:100%; object-fit: cover;" src="{% if post.user.profile.image %}{{post.user.profile.image.url}}{% endif %}" alt="profile picture">
+                                    </figure>
+                                </a>
+                            </div>
+                            <!-- profile picture end -->
+                            <div class="posted-author">
+                                <h6 class="author"><a href="profile.html">{{post.user.profile.full_name}}</a></h6>
+                                <span class="post-time">{{post.created_at | timesince }} ago</span>
+                            </div>
+
+                            {% if request.user == post.user %}
+							<div class="post-settings-bar">
+								<span></span>
+								<span></span>
+								<span></span>
+								<div class="post-settings arrow-shape">
+									<ul>
+										<li><button onclick="editPost('{{post.id}}', '{{post.body | escapejs}}', 'profile')" data-bs-toggle="modal" data-bs-target="#edit_post">Edit Post</button></li>
+										<li>
+											<a
+												href="{% url 'delete_post' 'profile' post.id %}"
+												>Delete Post</a
+											>
+										</li>
+									</ul>
+								</div>
+							</div>
+							{% endif %}
+                        </div>
+                        <!-- post title start -->
+                        <div class="post-content">
+                            <p class="post-desc">
+                                {{post.body}}
+                            </p>
+                            <div class="post-thumb-gallery img-gallery">
+                                <div class="row g-0">
+                                    <div class="col-12">
+                                        <figure class="post-thumb">
+                                            <a class="gallery-selector" href="{% static 'social_app/images/post/post-2.jpg' %}">
+                                                <img class="img-fluid" src="{% if post.image %}{{post.image.url}}{% endif %}" style="height:400px; width:500px; object-fit: cover;" alt="post image">
+                                            </a>
+                                        </figure>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="post-meta">
+                                <button class="post-meta-like"
+									 onclick="postLike({{ post.id }})">
+                                   <i
+										class="fa-solid fa-heart {% if post.liked_by_user %}text-danger{% endif %} "
+										id="like_btn_{{post.id}}"></i>
+                                    <span
+										><span id="likes_count_{{ post.id }}">{{ post.total_likes }}</span>
+										People like this</span
+									>
+                                    <strong>207</strong>
+                                </button>
+                                <ul class="comment-share-meta">
+                                    <li>
+                                        <button class="post-comment" onclick="addCommentPostId('{{post.id}}')">
+                                            <i class="fa-regular fa-comment" data-bs-toggle="modal" data-bs-target="#staticBackdrop"></i>
+                                            <span>{{ post.total_comments}}</span>
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button class="post-share">
+                                            <i class="fa-solid fa-share"></i>
+                                            <span>07</span>
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- post status end -->
+                    {% endfor %}
+                        
+                </div>
+
+                <div class="col-lg-3 order-3">
+                    <aside class="widget-area">
+                        <!-- widget single item start -->
+                        <div class="card widget-item">
+                            <h4 class="widget-title">Recent Notifications</h4>
+                            <div class="widget-body">
+                                <ul class="like-page-list-wrapper">
+                                    <li class="unorder-list">
+                                        <!-- profile picture end -->
+                                        <div class="profile-thumb">
+                                            <a href="#">
+                                                <figure class="profile-thumb-small">
+                                                    <img src="{% static 'social_app/images/profile/profile-35x35-9.jpg' %}" alt="profile picture">
+                                                </figure>
+                                            </a>
+                                        </div>
+                                        <!-- profile picture end -->
+
+                                        <div class="unorder-list-info">
+                                            <h3 class="list-title"><a href="#">Any one can join with us if you want</a></h3>
+                                            <p class="list-subtitle">5 min ago</p>
+                                        </div>
+                                    </li>
+                                    <li class="unorder-list">
+                                        <!-- profile picture end -->
+                                        <div class="profile-thumb">
+                                            <a href="#">
+                                                <figure class="profile-thumb-small">
+                                                    <img src="{% static 'social_app/images/profile/profile-35x35-8.jpg' %} " alt="profile picture">
+                                                </figure>
+                                            </a>
+                                        </div>
+                                        <!-- profile picture end -->
+
+                                        <div class="unorder-list-info">
+                                            <h3 class="list-title"><a href="#">Any one can join with us if you want</a></h3>
+                                            <p class="list-subtitle">10 min ago</p>
+                                        </div>
+                                    </li>
+                                    <li class="unorder-list">
+                                        <!-- profile picture end -->
+                                        <div class="profile-thumb">
+                                            <a href="#">
+                                                <figure class="profile-thumb-small">
+                                                    <img src="{% static 'social_app/images/profile/profile-35x35-7.jpg' %}" alt="profile picture">
+                                                </figure>
+                                            </a>
+                                        </div>
+                                        <!-- profile picture end -->
+
+                                        <div class="unorder-list-info">
+                                            <h3 class="list-title"><a href="#">Any one can join with us if you want</a></h3>
+                                            <p class="list-subtitle">18 min ago</p>
+                                        </div>
+                                    </li>
+                                    <li class="unorder-list">
+                                        <!-- profile picture end -->
+                                        <div class="profile-thumb">
+                                            <a href="#">
+                                                <figure class="profile-thumb-small">
+                                                    <img src="{% static 'social_app/images/profile/profile-35x35-6.jpg' %}" alt="profile picture">
+                                                </figure>
+                                            </a>
+                                        </div>
+                                        <!-- profile picture end -->
+
+                                        <div class="unorder-list-info">
+                                            <h3 class="list-title"><a href="#">Any one can join with us if you want</a></h3>
+                                            <p class="list-subtitle">25 min ago</p>
+                                        </div>
+                                    </li>
+                                    <li class="unorder-list">
+                                        <!-- profile picture end -->
+                                        <div class="profile-thumb">
+                                            <a href="#">
+                                                <figure class="profile-thumb-small">
+                                                    <img src="{% static 'social_app/images/profile/profile-35x35-5.jpg' %}" alt="profile picture">
+                                                </figure>
+                                            </a>
+                                        </div>
+                                        <!-- profile picture end -->
+
+                                        <div class="unorder-list-info">
+                                            <h3 class="list-title"><a href="#">Any one can join with us if you want</a></h3>
+                                            <p class="list-subtitle">39 min ago</p>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- widget single item end -->
+
+                        <!-- widget single item start -->
+                        <div class="card widget-item">
+                            <h4 class="widget-title">Advertizement</h4>
+                            <div class="widget-body">
+                                <div class="add-thumb">
+                                    <a href="#">
+                                        <img src="{% static 'social_app/images/banner/advertise.jpg' %}" alt="advertisement">
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- widget single item end -->
+
+                        <!-- widget single item start -->
+                        <div class="card widget-item">
+                            <h4 class="widget-title">Friends Zone</h4>
+                            <div class="widget-body">
+                                <ul class="like-page-list-wrapper">
+                                    <li class="unorder-list">
+                                        <!-- profile picture end -->
+                                        <div class="profile-thumb">
+                                            <a href="#">
+                                                <figure class="profile-thumb-small">
+                                                    <img src="{% static 'social_app/images/profile/profile-35x35-1.jpg' %}" alt="profile picture">
+                                                </figure>
+                                            </a>
+                                        </div>
+                                        <!-- profile picture end -->
+
+                                        <div class="unorder-list-info">
+                                            <h3 class="list-title"><a href="#">arfim bolt</a></h3>
+                                            <p class="list-subtitle"><a href="#">10 mutual</a></p>
+                                        </div>
+                                        <button class="like-button">
+                                            <img class="heart" src="{% static 'social_app/images/icons/heart.png' %}" alt="">
+                                            <img class="heart-color" src="{% static 'social_app/images/icons/heart-color.png' %}" alt="">
+                                        </button>
+                                    </li>
+                                    <li class="unorder-list">
+                                        <!-- profile picture end -->
+                                        <div class="profile-thumb">
+                                            <a href="#">
+                                                <figure class="profile-thumb-small">
+                                                    <img src="{% static 'social_app/images/profile/profile-35x35-2.jpg' %}" alt="profile picture">
+                                                </figure>
+                                            </a>
+                                        </div>
+                                        <!-- profile picture end -->
+
+                                        <div class="unorder-list-info">
+                                            <h3 class="list-title"><a href="#">marry wither</a></h3>
+                                            <p class="list-subtitle"><a href="#">02 mutual</a></p>
+                                        </div>
+                                        <button class="like-button active">
+                                            <img class="heart" src="{% static 'social_app/images/icons/heart.png' %}" alt="">
+                                            <img class="heart-color" src="{% static 'social_app/images/icons/heart-color.png' %}" alt="">
+                                        </button>
+                                    </li>
+                                    <li class="unorder-list">
+                                        <!-- profile picture end -->
+                                        <div class="profile-thumb">
+                                            <a href="#">
+                                                <figure class="profile-thumb-small">
+                                                    <img src="{% static 'social_app/images/profile/profile-35x35-3.jpg' %}" alt="profile picture">
+                                                </figure>
+                                            </a>
+                                        </div>
+                                        <!-- profile picture end -->
+
+                                        <div class="unorder-list-info">
+                                            <h3 class="list-title"><a href="#">Rolin Theitar</a></h3>
+                                            <p class="list-subtitle"><a href="#">drama</a></p>
+                                        </div>
+                                        <button class="like-button">
+                                            <img class="heart" src="{% static 'social_app/images/icons/heart.png' %}" alt="">
+                                            <img class="heart-color" src="{% static 'social_app/images/icons/heart-color.png' %}" alt="">
+                                        </button>
+                                    </li>
+                                    <li class="unorder-list">
+                                        <!-- profile picture end -->
+                                        <div class="profile-thumb">
+                                            <a href="#">
+                                                <figure class="profile-thumb-small">
+                                                    <img src="{% static 'social_app/images/profile/profile-35x35-4.jpg' %}" alt="profile picture">
+                                                </figure>
+                                            </a>
+                                        </div>
+                                        <!-- profile picture end -->
+
+                                        <div class="unorder-list-info">
+                                            <h3 class="list-title"><a href="#">Active Mind</a></h3>
+                                            <p class="list-subtitle"><a href="#">fitness</a></p>
+                                        </div>
+                                        <button class="like-button">
+                                            <img class="heart" src="{% static 'social_app/images/icons/heart.png' %}" alt="">
+                                            <img class="heart-color" src="{% static 'social_app/images/icons/heart-color.png' %} " alt="">
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- widget single item end -->
+                    </aside>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Update Profile</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-sm-6 mb-2">
+                        <label for="first_name" class="form-label">First Name</label>
+                        <input class="form-control" type="text" id="first_name" name="first_name" value="{{profile.first_name}}">
+                    </div>
+                    <div class="col-sm-6 mb-2">
+                        <label for="last_name" class="form-label">Last Name</label>
+                        <input class="form-control" type="text" id="last_name" name="last_name" value="{{profile.last_name}}">
+                    </div>
+                    <div class="col-sm-6 mb-2">
+                        <label for="age" class="form-label">Age</label>
+                        <select class="form-control" name="age" id="age">
+                            <option value="18+" 
+                                {% if profile.age == '18+' %}
+                                    selected
+                                {% endif %}
+                                >18+</option>
+                            <option value="18-"
+                            {% if profile.age == '18-' %}
+                                selected
+                            {% endif %}
+                            >18-</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-6 mb-2">
+                        <label for="country" class="form-label">Country</label>
+                        <input class="form-control" type="text" id="country" name="country" value="{{profile.country}}">
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="gender" class="form-label">Gender</label>
+                        <select class="form-control" name="gender" id="gender" value="{{profile.gender}}">
+                            <option value="male"
+                            {% if profile.gender == 'male' %}
+                                selected
+                            {% endif %}
+                            >Male</option>
+                            <option value="female"
+                            {% if profile.gender == 'female' %}
+                                selected
+                            {% endif %}
+                            >Female</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="image" class="form-label">Profile Image</label>
+                        <input type="file" id="image" name="image">
+                    </div>
+                </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="edit-btn" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="edit-btn bg-success">Save changes</button>
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

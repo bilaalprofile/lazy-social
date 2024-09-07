@@ -14,11 +14,14 @@
 		<link
 			rel="shortcut icon"
 			type="image/x-icon"
-			href="{% static 'social_app/images/favicon.ico' %}" />
+			href="{% static 'social_app/images/logo/befly.PNG' %}" />
 
 		<!-- CSS
 	============================================ -->
 		<!-- google fonts -->
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
 		<link
 			href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i,900"
 			rel="stylesheet" />
@@ -27,13 +30,13 @@
 			rel="stylesheet"
 			href="{% static 'social_app/css/vendor/bootstrap.min.css' %}" />
 		<!-- Icon Font CSS -->
-		<link
+		{% comment %} <link
 			rel="stylesheet"
-			href="{% static 'social_app/css/vendor/bicon.min.css' %}" />
+			href="{% static 'social_app/css/vendor/bicon.min.css' %}" /> {% endcomment %}
 		<!-- Flat Icon CSS -->
-		<link
+		{% comment %} <link
 			rel="stylesheet"
-			href="{% static 'social_app/css/vendor/flaticon.css' %}" />
+			href="{% static 'social_app/css/vendor/flaticon.css' %}" /> {% endcomment %}
 		<!-- audio & video player CSS -->
 		<link
 			rel="stylesheet"
@@ -71,7 +74,7 @@
 							<div class="header-top-navigation">
 								<nav>
 									<ul>
-										<li class="active">
+										<li class="">
 											<a href="{% url 'index' %}">home</a>
 										</li>
 										<li class="msg-trigger">
@@ -409,20 +412,22 @@
 											placeholder="Search"
 											class="top-search-field" />
 										<button class="top-search-btn">
-											<i class="flaticon-search"></i>
+											<i class="fa-solid fa-magnifying-glass"></i>
 										</button>
 									</form>
 								</div>
 								<!-- header top search end -->
 
 								<!-- profile picture start -->
-								<div class="profile-setting-box">
+								
+								{% if user.is_authenticated %}
+									<div class="profile-setting-box">
 									<div class="profile-thumb-small">
 										<a
 											href="javascript:void(0)"
 											class="profile-triger">
 											<figure>
-												<img
+												<img style="height:40px; width:40px; object-fit: cover;"
 													src="{% if profile.image %}{{profile.image.url}}{% endif %}"
 													alt="profile picture" />
 											</figure>
@@ -450,16 +455,12 @@
 													</li>
 													<li>
 														<a href="#"
-															><i
-																class="flaticon-message"></i
-															>Inbox</a
+															><i class="fa-solid fa-comment"></i>Inbox</a
 														>
 													</li>
 													<li>
 														<a href="#"
-															><i
-																class="flaticon-document"></i
-															>Activity</a
+															><i class="fa-solid fa-file"></i>Activity</a
 														>
 													</li>
 												</ul>
@@ -467,9 +468,17 @@
 													<li>
 														<a
 															href="{% url 'settings' %}"
-															><i
-																class="flaticon-settings"></i
-															>Setting</a
+															><i class="fa-solid fa-wrench"></i>
+															Setting</a
+														>
+													</li>
+													<li>
+														<a
+															data-bs-toggle="modal" 
+															data-bs-target="#textbox1"
+															href="#"
+															><i class="fa-solid fa-users"></i>
+															Create group</a
 														>
 													</li>
 
@@ -477,18 +486,14 @@
 													<li>
 														<a
 															href="{% url 'logout' %}"
-															><i
-																class="flaticon-unlock"></i
-															>Sign out</a
+															><i class="fa-solid fa-right-to-bracket"></i>Sign out</a
 														>
 													</li>
 													{% else %}
 													<li>
 														<a
 															href="{% url 'signup' %}"
-															><i
-																class="flaticon-unlock"></i
-															>Login/Signup</a
+															><i class="fa-solid fa-user-plus"></i>Login/Signup</a
 														>
 													</li>
 													{% endif %}
@@ -497,6 +502,8 @@
 										</div>
 									</div>
 								</div>
+								{% endif %}
+									
 								<!-- profile picture end -->
 							</div>
 						</div>
@@ -1520,7 +1527,7 @@
 														<figure
 															class="profile-thumb-small profile-active">
 															<img
-																src="{% static 'social_app/sets/images/profile/profile-small-5.jpg' %}"
+																src="{% static 'social_app/images/profile/profile-small-5.jpg' %}"
 																alt="profile picture" />
 														</figure>
 													</a>
@@ -1553,10 +1560,78 @@
 				</div>
 			</div>
 		</footer>
-		<!-- footer area end -->
 
-		<!-- JS
-============================================ -->
+		{% include 'social_app/edit_post.html' %}
+		{% include 'social_app/comments.html' %}
+		{% include 'social_app/create_group.html' %}
+		<input type="hidden" id="csrf_token" value="{{csrf_token}}" />
+		<!-- footer area end -->
+		<script>
+			function editPost(id, body, page) {
+				document.getElementById("edit_post_body").value = body;
+				document.getElementById("edit_post_id").value = id;
+				document.getElementById("edit_post_page").value = page;
+			}
+
+			function postLike(id) {
+				const likeIcon = document.getElementById(`like_btn_${id}`);
+				const likeCount = document.getElementById(`likes_count_${id}`);
+
+				// Send a request to the server to like/unlike the post
+				fetch(`/post-like/?id=${id}`)
+					.then((response) => response.json())
+					.then((data) => {
+						// Update the like count based on the server's response
+						likeCount.textContent = data.total_likes;
+
+						// Update the button appearance based on whether the post is liked or not
+						if (data.liked) {
+							likeIcon.classList.add("text-danger");
+						} else {
+							likeIcon.classList.remove("text-danger");
+						}
+					
+
+						console.log(data.message);
+					})
+					.catch((error) => {
+						console.error("Error:", error);
+					});
+			}
+
+			function addCommentPostId(id){
+				document.getElementById('add_comment_post_id').value = id;
+				const commentCount =  document.getElementById(`comments_count_${id}`);
+				fetch(`/fetch-comments/?id=${id}`)
+				.then((res) => res.json())
+				.then((data) => {
+					const commentDiv = document.querySelector('.post_comments')
+					commentCount.textContent = data.total_comments;
+					let htmlBody = "";
+					if (data.status == 'success'){
+						data.comments.forEach(comment => {
+							htmlBody += `
+								<span>
+									<img class='rounded-circle'
+									style="width: 30px; height: 30px; object-fit: cover;"
+									src="${comment.profile_image}">
+								</img>
+								</span>
+								<span>${comment.username}</span>
+								<p>${comment.body}</p>
+								<img src="${comment.image}" width="100px" style="border-radius: 10px;"></img>
+								<hr>
+							`
+						})
+						if (htmlBody) {
+							commentDiv.innerHTML = htmlBody;
+						} else {
+							commentDiv.innerHTML = "<p>No comments found</p>"
+						}
+					}
+				})
+			}
+		</script>
 
 		<!-- Modernizer JS -->
 		<script src="{% static 'social_app/js/vendor/modernizr-3.6.0.min.js' %}"></script>
