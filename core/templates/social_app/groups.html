@@ -21,11 +21,8 @@
 
                 <div class="unorder-list-info">
                     <h3 class="list-title mt-2">
-                        <a href="#">{{group.name}}</a>
+                        <a href="{% url 'group' group.id %}">{{group.name}}</a>
                     </h3>
-                    {% comment %} <p class="list-subtitle">
-                        
-                    </p> {% endcomment %}
                 </div>
             </li>
             {% endfor %}

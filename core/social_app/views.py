@@ -61,6 +61,15 @@ def profile(request):
 
 
 @login_required
+def group(request, pk):
+    return render(request, 'social_app/group.html')
+
+@login_required
+def friends(request):
+    return render(request, 'social_app/friends.html')
+
+
+@login_required
 def add_post(request):
     if request.method == 'POST':
         Post.objects.create(

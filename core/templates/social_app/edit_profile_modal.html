@@ -1,0 +1,67 @@
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Update Profile</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-sm-6 mb-2">
+                        <label for="first_name" class="form-label">First Name</label>
+                        <input class="form-control" type="text" id="first_name" name="first_name" value="{{profile.first_name}}">
+                    </div>
+                    <div class="col-sm-6 mb-2">
+                        <label for="last_name" class="form-label">Last Name</label>
+                        <input class="form-control" type="text" id="last_name" name="last_name" value="{{profile.last_name}}">
+                    </div>
+                    <div class="col-sm-6 mb-2">
+                        <label for="age" class="form-label">Age</label>
+                        <select class="form-control" name="age" id="age">
+                            <option value="18+" 
+                                {% if profile.age == '18+' %}
+                                    selected
+                                {% endif %}
+                                >18+</option>
+                            <option value="18-"
+                            {% if profile.age == '18-' %}
+                                selected
+                            {% endif %}
+                            >18-</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-6 mb-2">
+                        <label for="country" class="form-label">Country</label>
+                        <input class="form-control" type="text" id="country" name="country" value="{{profile.country}}">
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="gender" class="form-label">Gender</label>
+                        <select class="form-control" name="gender" id="gender" value="{{profile.gender}}">
+                            <option value="male"
+                            {% if profile.gender == 'male' %}
+                                selected
+                            {% endif %}
+                            >Male</option>
+                            <option value="female"
+                            {% if profile.gender == 'female' %}
+                                selected
+                            {% endif %}
+                            >Female</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="image" class="form-label">Profile Image</label>
+                        <input type="file" id="image" name="image">
+                    </div>
+                </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="edit-btn" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="edit-btn bg-success">Save changes</button>
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>

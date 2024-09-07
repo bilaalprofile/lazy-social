@@ -1600,6 +1600,7 @@
 			}
 
 			function addCommentPostId(id){
+				
 				document.getElementById('add_comment_post_id').value = id;
 				const commentCount =  document.getElementById(`comments_count_${id}`);
 				fetch(`/fetch-comments/?id=${id}`)

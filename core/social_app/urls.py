@@ -4,6 +4,7 @@ from . import views
 urlpatterns = [
     path('', views.index, name='index'),
     path('profile/', views.profile, name='profile'),
+    path('friends/', views.friends, name='friends'),
     path('add-post/', views.add_post, name="add_post"),
     path('delete-post/<str:page>/<int:pk>/',
          views.delete_post, name="delete_post"),
@@ -17,4 +18,5 @@ urlpatterns = [
     path('logout-user/', views.logout_user, name='logout'),
     path('change-password/', views.change_password, name='change_password'),
     path('fetch-comments/', views.fetch_comments, name="fetch_comments"),
+    path('group/<int:pk>/', views.group, name="group"),
 ]

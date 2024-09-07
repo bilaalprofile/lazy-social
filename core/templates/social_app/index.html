@@ -163,18 +163,9 @@
 								<div class="row g-0">
 									<div class="col-12">
 										<figure class="post-thumb">
-											<a
-												class="gallery-selector"
-												href="{% static 'social_app/images/post/post-2.jpg' %} ">
-												<img
-													class="img-fluid"
-													src="{% if post.image %}{{post.image.url}}{% endif %}"
-													style="
-														width: 500px;
-														object-fit: cover;
-													"
-													alt="post image" />
-											</a>
+											{% if post.image %}
+                                                <img class="img-fluid" src="{% if post.image %}{{post.image.url}}{% endif %}" style="height:400px; width:500px; object-fit: cover;" alt="post image">
+                                            {% endif %}
 										</figure>
 									</div>
 								</div>
@@ -196,8 +187,8 @@
 								</button>
 								<ul class="comment-share-meta">
 									<li>
-										<button class="post-comment" onclick="addCommentPostId('{{post.id}}')">
-											<i data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+										<button data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="post-comment" onclick="addCommentPostId('{{post.id}}')">
+											<i 
 												class="fa-regular fa-comment"></i>
 											<span id="comments_count_{{ post.id }}">{{ post.total_comments }}</span>
 										</button>
@@ -213,7 +204,7 @@
 						</div>
 						{% with post.comments.first as first_comment %}
 							{% if first_comment %}
-								<div class="form-control mt-3 bg-light">
+								<div data-bs-toggle="modal" data-bs-target="#staticBackdrop" style=" cursor: pointer;" class="form-control mt-3 bg-light">
 												<span>
 													<img class="rounded-circle" 
 														style="width: 20px; height: 20px; object-fit: cover;" 
@@ -224,10 +215,9 @@
 												<p style='font-size: 14px; color: #6b6b69' class='mx-1 my-1'>{{ first_comment.body }}</p>
 											
 												<div class='float-end' style='font-size: 12px; color: #6b6b69'>{{first_comment.created_at | timesince}}</div>
-											
 								</div>
 							{% else %}
-											<input  type="text" class='form-control bg-light mt-3 py-3 ' placeholder='Say somethig'>
+								<input data-bs-toggle="modal" data-bs-target="#staticBackdrop" style=" cursor: pointer;" type="text" class='form-control bg-light mt-3 py-3 ' placeholder='Say somethig'>
 							{% endif %}
 						{% endwith %}
 
