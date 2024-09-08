@@ -1,0 +1,129 @@
+<div class="col-lg-6 order-1 order-lg-2">
+					<!-- share box start -->
+					<div class="card card-small">
+						{% include 'social_app/sharer.html' %}
+					</div>
+					<!-- share box end -->
+					{% for post in posts %}
+					<!-- post status start -->
+					<div class="card">
+						<!-- post title start -->
+						<div class="post-title d-flex align-items-center">
+							<!-- profile picture end -->
+							<div class="profile-thumb">
+								<a href="{% url 'profile' %}">
+									<figure class="profile-thumb-middle">
+										<img
+											src="{% if post.user.profile.image %}{{post.user.profile.image.url}}{% endif %}"
+											alt="profile picture" />
+									</figure>
+								</a>
+							</div>
+							<!-- profile picture end -->
+							<div class="posted-author">
+								<h6 class="author">
+									<a href="profile.html"
+										>{{post.user.profile.full_name}}</a
+									>
+								</h6>
+								<span class="post-time"
+									>{{post.created_at | timesince }} ago</span
+								>
+							</div>
+
+							{% if request.user == post.user %}
+							<div class="post-settings-bar">
+								<span></span>
+								<span></span>
+								<span></span>
+								<div class="post-settings arrow-shape">
+									<ul>
+										<li>
+											<button
+												onclick="editPost('{{post.id}}', '{{post.body | escapejs}}', 'index')"
+												data-bs-toggle="modal"
+												data-bs-target="#edit_post">
+												Edit Post
+											</button>
+										</li>
+										<li>
+											<a
+												href="{% url 'delete_post' 'index' post.id %}"
+												>Delete this Post</a
+											>
+										</li>
+									</ul>
+								</div>
+							</div>
+							{% endif %}
+						</div>
+						<!-- post title start -->
+						<div class="post-content">
+							<p class="post-desc">{{post.body}}</p>
+							<div class="post-thumb-gallery img-gallery">
+								<div class="row g-0">
+									<div class="col-12">
+										<figure class="post-thumb">
+											{% if post.image %}
+                                                <img class="img-fluid" src="{% if post.image %}{{post.image.url}}{% endif %}" style="height:400px; width:500px; object-fit: cover;" alt="post image">
+                                            {% endif %}
+										</figure>
+									</div>
+								</div>
+							</div>
+							<div class="post-meta">
+								<button
+									class="post-meta-like"
+									 onclick="postLike({{ post.id }})">
+									<i
+										class="fa-solid fa-heart {% if post.liked_by_user %}text-danger{% endif %} "
+										id="like_btn_{{post.id}}"></i>
+									<span >
+									<span id="likes_count_{{ post.id }}">
+										{{ post.total_likes }}
+									</span>
+										People like this
+									</span>
+									
+								</button>
+								<ul class="comment-share-meta">
+									<li>
+										<button data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="post-comment" onclick="addCommentPostId('{{post.id}}')">
+											<i 
+												class="fa-regular fa-comment"></i>
+											<span id="comments_count_{{ post.id }}">{{ post.total_comments }}</span>
+										</button>
+									</li>
+									<li>
+										<button class="post-share">
+											<i class="fa-solid fa-share"></i>
+											<span>07</span>
+										</button>
+									</li>
+								</ul>
+							</div>
+						</div>
+						{% with post.comments.first as first_comment %}
+							{% if first_comment %}
+								<div data-bs-toggle="modal" data-bs-target="#staticBackdrop" style=" cursor: pointer;" class="form-control mt-3 bg-light">
+												<span>
+													<img class="rounded-circle" 
+														style="width: 20px; height: 20px; object-fit: cover;" 
+														src="{{ first_comment.post.user.profile.image.url }}">
+													
+												</span>
+												<span>{{ first_comment.post.user.username }}</span>
+												<p style='font-size: 14px; color: #6b6b69' class='mx-1 my-1'>{{ first_comment.body }}</p>
+											
+												<div class='float-end' style='font-size: 12px; color: #6b6b69'>{{first_comment.created_at | timesince}}</div>
+								</div>
+							{% else %}
+								<input data-bs-toggle="modal" data-bs-target="#staticBackdrop" style=" cursor: pointer;" type="text" class='form-control bg-light mt-3 py-3 ' placeholder='Say somethig'>
+							{% endif %}
+						{% endwith %}
+
+						
+					</div>
+					<!-- post status end -->
+					{% endfor %}
+				</div>
