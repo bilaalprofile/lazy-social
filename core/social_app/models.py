@@ -46,6 +46,9 @@ class Post(models.Model):
     def total_comments(self):
         return self.comments.count()
 
+    def __str__(self):
+        return self.user.username + ' - ' + self.body
+
 
 class Like(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -72,6 +75,8 @@ class Comment(DateTimeModel):
 
 class Group(DateTimeModel):
     name = models.CharField(max_length=50)
+    description = models.TextField(blank=True, null=True)
+    members = models.ManyToManyField(User)
 
     def __str__(self):
         return self.name

@@ -4,7 +4,7 @@
 		<a href="#">
 			<figure class="profile-thumb-middle">
 				<img style="height:100%; width:100%; object-fit: cover;"
-					src="{% if profile.image %}{{profile.image.url}}{% endif %}"
+					src="{% if request.user.profile.image %}{{request.user.profile.image.url}}{% endif %}"
 					alt="profile picture" />
 			</figure>
 		</a>

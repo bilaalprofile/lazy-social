@@ -103,27 +103,27 @@
 
         {% comment %}///////////////////////////// navbar logo//////////////////////////{% endcomment %}
         <div class="col-md-2">
-			<!-- brand logo start -->
-			<div class="brand-logo text-center">
-				<a href="index.html"><img style="width: 70px" class="personal_logo" src="{% static 'social_app/images/logo/befly.PNG' %}" alt="brand logo" /></a>
-			</div>
-			<!-- brand logo end -->
+          <!-- brand logo start -->
+          <div class="brand-logo text-center">
+            <a href="index.html"><img style="width: 70px" class="personal_logo" src="{% static 'social_app/images/logo/befly.PNG' %}" alt="brand logo" /></a>
+          </div>
+          <!-- brand logo end -->
         </div>
-		{% comment %}///////////////////////////// nav search bar//////////////////////////{% endcomment %}
-		
+        {% comment %}///////////////////////////// nav search bar//////////////////////////{% endcomment %}
+
         <div class="col-md-5">
-			<div class="header-top-right d-flex align-items-center justify-content-end">
-				<!-- header top search start -->
-				<div class="header-top-search">
-					<form class="top-search-box">
-						<input type="text" placeholder="Search" class="top-search-field" />
-						<button class="top-search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
-					</form>
-				</div>
-				<!-- header top search end -->
-				
-				<!-- profile picture start -->
-				{% comment %}///////////////////////////// navbar profile button//////////////////////////{% endcomment %}
+          <div class="header-top-right d-flex align-items-center justify-content-end">
+            <!-- header top search start -->
+            <div class="header-top-search">
+              <form class="top-search-box">
+                <input type="text" placeholder="Search" class="top-search-field" />
+                <button class="top-search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+              </form>
+            </div>
+            <!-- header top search end -->
+
+            <!-- profile picture start -->
+            {% comment %}///////////////////////////// navbar profile button//////////////////////////{% endcomment %}
 
             {% if user.is_authenticated %}
               <div class="profile-setting-box">
@@ -135,8 +135,8 @@
                   </a>
                   <div class="profile-dropdown">
                     <div class="profile-head">
-                      <h5 class="name"><a href="#">{{ profile.full_name }}</a></h5>
-                      <a class="mail" href="#">{{ profile.user.email }}</a>
+                      <h5 class="name"><a href="#">{{ request.user.profile.full_name }}</a></h5>
+                      <a class="mail" href="#">{{ request.user.profile.user.email }}</a>
                     </div>
                     <div class="profile-body">
                       <ul>
@@ -327,8 +327,8 @@
           </a>
           <div class="profile-dropdown text-left">
             <div class="profile-head">
-              <h5 class="name"><a href="#">Madison Howard</a></h5>
-              <a class="mail" href="#">mailnam@mail.com</a>
+              <h5 class="name"><a href="#">{{ request.user.profile.full_name }}</a></h5>
+              <a class="mail" href="#">{{ request.user.profile.email }}</a>
             </div>
             <div class="profile-body">
               <ul>

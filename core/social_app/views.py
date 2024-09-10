@@ -32,6 +32,7 @@ def index(request):
 
 @login_required
 def profile(request):
+    groups = Group.objects.all()
     profile = Profile.objects.filter(user=request.user).first()
     posts = Post.objects.filter(user=request.user).order_by('-created_at')
     for post in posts:
@@ -55,6 +56,7 @@ def profile(request):
     context = {
         "profile": profile,
         "posts": posts,
+        'groups': groups,
 
     }
     return render(request, 'social_app/profile.html', context)
@@ -62,7 +64,22 @@ def profile(request):
 
 @login_required
 def group(request, pk):
-    return render(request, 'social_app/group.html')
+    group = get_object_or_404(Group, id=pk)
+    has_joined = group.members.filter(username=request.user.username).exists()
+    return render(request, 'social_app/group.html', {'group': group, 'has_joined': has_joined})
+
+
+def join_group(request, pk):
+    request_type = request.GET.get('type')
+    group = get_object_or_404(Group, id=pk)
+    if request_type == 'join':
+        group.members.add(request.user)
+        message = "removed from"
+    else:
+        group.members.remove(request.user)
+        message = "added to"
+    return JsonResponse({'status': 'success', 'message': f'You have successfully been {message} the group'})
+
 
 @login_required
 def friends(request):
@@ -102,12 +119,14 @@ def delete_post(request, page, pk):
 @login_required
 def post_like(request):
     post_id = request.GET.get('id')
-    post = get_object_or_404(Post, id=post_id)
+    post = get_object_or_404(Post, id=request.GET.get('id'))
+    post = Post.objects.get(id=post_id)
     user = request.user
 
     # Check if the user has already liked the post
     liked = False
     like = Like.objects.filter(user=user, post=post).first()
+    print(like, type(like))
 
     if like:
         like.delete()

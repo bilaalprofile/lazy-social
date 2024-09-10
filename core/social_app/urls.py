@@ -19,4 +19,5 @@ urlpatterns = [
     path('change-password/', views.change_password, name='change_password'),
     path('fetch-comments/', views.fetch_comments, name="fetch_comments"),
     path('group/<int:pk>/', views.group, name="group"),
+    path('join-group/<int:pk>/', views.join_group, name="join_group"),
 ]
