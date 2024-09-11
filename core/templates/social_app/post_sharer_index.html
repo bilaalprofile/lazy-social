@@ -13,7 +13,7 @@
 							<div class="profile-thumb">
 								<a href="{% url 'profile' %}">
 									<figure class="profile-thumb-middle">
-										<img
+										<img style="height:100%; width:100%; object-fit: cover;"
 											src="{% if post.user.profile.image %}{{post.user.profile.image.url}}{% endif %}"
 											alt="profile picture" />
 									</figure>
@@ -23,8 +23,8 @@
 							<div class="posted-author">
 								<h6 class="author">
 									<a href="profile.html"
-										>{{post.user.profile.full_name}}</a
-									>
+										>{{post.user.profile.full_name}} {% if post.group %} - {{post.group}}{% endif %}
+										</a>
 								</h6>
 								<span class="post-time"
 									>{{post.created_at | timesince }} ago</span

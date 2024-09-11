@@ -51,6 +51,7 @@
 					enctype="multipart/form-data"
 					action="{% url 'add_post' %}">
 					{% csrf_token %}
+					<input type="hidden" name="group_id" value="{{group.id}}">
 					<div class="modal-body custom-scroll">
 						<textarea
 							name="body"

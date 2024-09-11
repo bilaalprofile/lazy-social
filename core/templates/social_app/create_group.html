@@ -1,55 +1,41 @@
 <div class="share-box-inner">
-	<!-- profile picture end -->
-	<div class="profile-thumb">
-		<a href="#">
-			<figure class="profile-thumb-middle">
-				<img style="height:100%; width:100%; object-fit: cover;"
-					src="{% if profile.image %}{{profile.image.url}}{% endif %}"
-					alt="profile picture" />
-			</figure>
-		</a>
-	</div>
-	<!-- profile picture end -->
-	<!-- Modal start -->
-	<div class="modal fade" id="textbox1" aria-labelledby="textbox1">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title">Create group name</h5>
-					<button
-						type="button"
-						class="close"
-						data-bs-dismiss="modal"
-						aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<form
-					method="post"
-					enctype="multipart/form-data"
-					action="{% url 'add_post' %}">
-					{% csrf_token %}
-					<div class="modal-body custom-scroll">
-						<input
-							name="group_name"
-							class="input-field form-control"
-							placeholder="group name!" />
-						
-					</div>
-					<div class="modal-footer">
-						<button
-							type="button"
-							class="post-share-btn"
-							data-bs-dismiss="modal">
-							cancel
-						</button>
-						<button type="submit" class="post-share-btn">
-							Create
-						</button>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
-	<!-- Modal end -->
+  <!-- profile picture end -->
+  <div class="profile-thumb">
+    <a href="#">
+      <figure class="profile-thumb-middle">
+        <img style="height:100%; width:100%; object-fit: cover;" src="{% if profile.image %}{{ profile.image.url }}{% endif %}" alt="profile picture" />
+      </figure>
+    </a>
+  </div>
+  <!-- profile picture end -->
+  <!-- Modal start -->
+  <div class="modal fade" id="textbox1" aria-labelledby="textbox1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Create group</h5>
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <form method="post" enctype="multipart/form-data" action="{% url 'create_group' %}">
+          {% csrf_token %}
+          <div class="modal-body custom-scroll">
+            <input type="hidden" name="edit_group" id="edit_group">
+              <label for="name">Name</label>
+              <input name="name" id="name" class="input-field form-control" placeholder="Name!" />
+              <br>
+              <label for="group_image">Image</label>
+              <input class="input-field form-control" type="file" name="image" id="group_image">
+              <br>
+              <label for="description">Description</label>
+              <textarea class="text-field form-control" name="description" id="description"></textarea>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="post-share-btn" data-bs-dismiss="modal">cancel</button>
+            <button type="submit" class="post-share-btn">Create</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <!-- Modal end -->
 </div>

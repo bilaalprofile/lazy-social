@@ -7,7 +7,7 @@ from .models import (
     Post,
     Like,
     Comment,
-    Group
+    SocialGroup
 )
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
@@ -18,7 +18,7 @@ from django.shortcuts import get_object_or_404
 @login_required
 def index(request):
     profile = Profile.objects.filter(user=request.user).first()
-    groups = Group.objects.all()
+    groups = SocialGroup.objects.all()
     posts = Post.objects.order_by('-created_at')
     for post in posts:
         post.liked_by_user = post.is_liked_by_user(request.user)
@@ -32,7 +32,7 @@ def index(request):
 
 @login_required
 def profile(request):
-    groups = Group.objects.all()
+    groups = SocialGroup.objects.all()
     profile = Profile.objects.filter(user=request.user).first()
     posts = Post.objects.filter(user=request.user).order_by('-created_at')
     for post in posts:
@@ -63,15 +63,34 @@ def profile(request):
 
 
 @login_required
-def group(request, pk):
-    group = get_object_or_404(Group, id=pk)
-    has_joined = group.members.filter(username=request.user.username).exists()
-    return render(request, 'social_app/group.html', {'group': group, 'has_joined': has_joined})
+def create_group(request):
+    if request.method == "POST":
+        print(request.POST)
+        group = SocialGroup.objects.create(
+            user=request.user,
+            name=request.POST.get('name'),
+            image=request.FILES.get('image'),
+            description=request.POST.get('description'),
+        )
+        group.members.add(request.user)
+    return redirect('group', group.id)
 
+
+@login_required
+def group(request, pk):
+    group = get_object_or_404(SocialGroup, id=pk)
+    posts = Post.objects.filter(group=group)
+    for post in posts:
+        post.liked_by_user = post.is_liked_by_user(request.user)
+    has_joined = group.members.filter(username=request.user.username).exists()
+    return render(request, 'social_app/group.html', {'group': group, 'has_joined': has_joined, 'posts': posts})
+
+def edit_group(request):
+    return redirect("group", group.id)
 
 def join_group(request, pk):
     request_type = request.GET.get('type')
-    group = get_object_or_404(Group, id=pk)
+    group = get_object_or_404(SocialGroup, id=pk)
     if request_type == 'join':
         group.members.add(request.user)
         message = "removed from"
@@ -79,6 +98,11 @@ def join_group(request, pk):
         group.members.remove(request.user)
         message = "added to"
     return JsonResponse({'status': 'success', 'message': f'You have successfully been {message} the group'})
+
+
+def group_friends(request):
+    members = SocialGroup.objects.all()
+    return render(request, "social_app/group_friends.html", {'members': members})
 
 
 @login_required
@@ -89,9 +113,13 @@ def friends(request):
 @login_required
 def add_post(request):
     if request.method == 'POST':
+        group_id = request.POST.get('group_id', None)
+        if group_id:
+            group = SocialGroup.objects.get(id=group_id)
         Post.objects.create(
             user=request.user,
             body=request.POST.get('body'),
+            group=group,
             image=request.FILES.get('image'),
         )
         return redirect('index')
@@ -99,7 +127,6 @@ def add_post(request):
 
 @login_required
 def edit_post(request):
-    print(request.POST)
     if request.method == 'POST':
         id = request.POST.get('id')
         page = request.POST.get('page')

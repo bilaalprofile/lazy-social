@@ -33,7 +33,8 @@ class Post(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     body = models.TextField()
     image = models.ImageField(blank=True, null=True, upload_to="posts/")
-    # likes = models.IntegerField(default=0)
+    group = models.ForeignKey(
+        'SocialGroup', on_delete=models.CASCADE, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -73,10 +74,14 @@ class Comment(DateTimeModel):
         return self.post.user.username
 
 
-class Group(DateTimeModel):
+class SocialGroup(DateTimeModel):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="created_by")
     name = models.CharField(max_length=50)
+    image = models.ImageField(null=True, blank=True,
+                              upload_to="group_profiles")
     description = models.TextField(blank=True, null=True)
-    members = models.ManyToManyField(User)
+    members = models.ManyToManyField(User, related_name="members")
 
     def __str__(self):
         return self.name
