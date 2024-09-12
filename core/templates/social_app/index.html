@@ -82,7 +82,7 @@
                         </div>
                         <!-- profile picture end -->
                         <div class="unorder-list-info">
-                          <h3 class="list-title"><a href="#">{{ friend.user.username }}</a> <a onclick="requestAccept(friendRequest.request_id)" href="">accept</a></h3>
+                          <h3 class="list-title"><a href="#">{{ friend.user.username }}</a> <button onclick="friendRequest('accepted', {{ friend.user.id }}, '')" href="">accept</button></h3>
                           <p class="list-subtitle">{{ friend.created_at|timesince }} ago</p>
                         </div>
                       </li>
@@ -158,23 +158,6 @@
             })
           }
         })
-    }
-    function requestAccept(requestId) {
-      fetch(`/friend-request/accept/${requestId}/`, {
-        method: 'POST',
-        headers: {
-          'X-CSRFToken': '{{ csrf_token }}',
-          'Content-Type': 'application/json'
-        }
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.status === 'success') {
-            
-            print(friendRequest.requestAccept)
-          }
-        })
-        .catch((error) => console.error('Error:', error))
     }
   </script>
 {% endblock %}

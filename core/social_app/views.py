@@ -26,22 +26,28 @@ def index(request):
     requests = friend_requests.filter(user=request.user)
     for user in users:
         is_in_loop = requests.filter(request_user=user).first()
-        if is_in_loop:
+        friend = friend_requests.filter(
+            user=user, request_user=request.user, accepted=True).first()
+        if friend:
+            user.request_exist = True
+            user.is_friend = True
+        elif is_in_loop:
             user.request_exist = True
             user.is_friend = is_in_loop.accepted
         else:
+            print('three')
             user.request_exist = False
+            user.is_friend = False
 
     for post in posts:
         post.liked_by_user = post.is_liked_by_user(request.user)
 
-    print(request.user)
     context = {
         'posts': posts,
         'profile': profile,
         'groups': groups,
         'users': users,
-        'inbox': friend_requests.filter(request_user=request.user),
+        'inbox': friend_requests.filter(request_user=request.user, accepted=False),
     }
     return render(request, 'social_app/index.html', context)
 
@@ -56,7 +62,19 @@ def friend_request(request):
             request_user=request_user
         )
         inbox.save()
-    return JsonResponse({'status': 'success', 'message': 'Friend request sent'})
+        return JsonResponse({'status': 'success', 'message': 'Friend request sent'}, status=200)
+
+    elif request.GET.get('type') == 'accepted':
+        request_user = get_object_or_404(User, id=request.GET.get('user1'))
+        inbox = FriendRequest.objects.filter(user=request_user, request_user=request.user).first()
+        inbox.accepted = True
+        inbox.save()
+        return JsonResponse({'status': 'success', 'message': 'Friend Request Accepted'}, status=200)
+
+    return JsonResponse({'status': 'failed', 'message': 'Something Went Wrong'}, status=301)
+
+
+    
 
 
 @login_required
@@ -146,15 +164,6 @@ def join_group(request, pk):
 def group_friends(request):
     members = SocialGroup.objects.all()
     return render(request, "social_app/group_friends.html", {'members': members})
-
-
-def request_accept(request, request_id):
-    friend_request = get_object_or_404(FriendRequest, id=request_id)
-    if not friend_request.accepted:
-        friend_request.accepted = True
-        friend_request.save()
-
-    return JsonResponse({'status': 'success'})
 
 
 @login_required
