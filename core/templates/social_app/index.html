@@ -1,219 +1,182 @@
 {% extends 'social_app/base.html' %} {% load static %} {% block content %}
-<main>
-	<div>
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-3 order-2 order-lg-1">
-					<aside class="widget-area">
-						<!-- widget single item start -->
-						<div class="card card-profile widget-item p-0">
-							<div class="profile-banner">
-								<figure class="profile-banner-small">
-									<a href="profile.html">
-										<img
-											class="img-fluid"
-											src="{% static 'social_app/images/coustom/photo1.jpg' %}"
-											style="
+  <main>
+    <div>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-3 order-2 order-lg-1">
+            <aside class="widget-area">
+              <!-- widget single item start -->
+              <div class="card card-profile widget-item p-0">
+                <div class="profile-banner">
+                  <figure class="profile-banner-small">
+                    <a href="profile.html"><img class="img-fluid" src="{% static 'social_app/images/coustom/photo1.jpg' %}" style="
 												width: 260px;
 												height: 140px;
 												object-fit: cover;
-											"
-											alt="" />
-									</a>
-									<a
-										href="{% url 'profile' %}"
-										class="profile-thumb-2">
-										<img class='rounded-circle'
-											style="
-													width: 70px;
-													height: 70px;
-													object-fit: cover;
-												"
-											src="{% if profile.image %}{{profile.image.url}}{% endif %}"
-											alt="profile-pic-small" />
-									</a>
-								</figure>
-								<div class="profile-desc text-center">
-									<h6 class="author">
-										<a href="{% url 'profile' %}"
-											>{{profile.full_name}}</a
-										>
-									</h6>
-									<p>
-										Any one can join with but Social network
-										us if you want Any one can join with us
-										if you want
-									</p>
-								</div>
-							</div>
-						</div>
-						<!-- widget single item start -->
+											" alt="" /></a>
+                    <a href="{% url 'profile' %}" class="profile-thumb-2"><img class="rounded-circle" style="width: 70px; height: 70px; object-fit: cover;" src="{% if profile.image %}{{ profile.image.url }}{% endif %}" alt="profile-pic-small" /></a>
+                  </figure>
+                  <div class="profile-desc text-center">
+                    <h6 class="author"><a href="{% url 'profile' %}">{{ profile.full_name }}</a></h6>
+                    <p>Any one can join with but Social network us if you want Any one can join with us if you want</p>
+                  </div>
+                </div>
+              </div>
+              <!-- widget single item start -->
 
-						<!-- widget single item start -->
-						<div class="card widget-item">
-							<h4 class="widget-title">page you may like</h4>
-							<div class="widget-body">
-								<ul class="like-page-list-wrapper">
-									<li class="unorder-list">
-										<!-- profile picture end -->
-										<div class="profile-thumb">
-											<a href="#">
-												<figure
-													class="profile-thumb-small">
-													<img
-														src="{% static 'social_app/images/profile/profile-35x35-1.jpg' %}"
-														alt="profile picture" />
-												</figure>
-											</a>
-										</div>
-										<!-- profile picture end -->
+              <!-- widget single item start -->
+              <div class="card widget-item">
+                <h4 class="widget-title">page you may like</h4>
+                <div class="widget-body">
+                  <ul class="like-page-list-wrapper">
+                    <li class="unorder-list">
+                      <!-- profile picture end -->
+                      <div class="profile-thumb">
+                        <a href="#">
+                          <figure class="profile-thumb-small">
+                            <img src="{% static 'social_app/images/profile/profile-35x35-1.jpg' %}" alt="profile picture" />
+                          </figure>
+                        </a>
+                      </div>
+                      <!-- profile picture end -->
 
-										<div class="unorder-list-info">
-											<h3 class="list-title">
-												<a href="#">Travel The World</a>
-											</h3>
-											<p class="list-subtitle">
-												<a href="#">adventure</a>
-											</p>
-										</div>
-										<button class="like-button active">
-											<img
-												class="heart"
-												src="{% static 'social_app/images/icons/heart.png' %}"
-												alt="" />
-											<img
-												class="heart-color"
-												src="{% static 'social_app/images/icons/heart-color.png' %}"
-												alt="" />
-										</button>
-									</li>
-								</ul>
-							</div>
-						</div>
-						<!-- widget single item end -->
-						<!-- widget single item start -->
-						{% include 'social_app/groups.html' %}
-						<!-- widget single item end -->
-					</aside>
-				</div>
+                      <div class="unorder-list-info">
+                        <h3 class="list-title"><a href="#">Travel The World</a></h3>
+                        <p class="list-subtitle">
+                          <a href="#">adventure</a>
+                        </p>
+                      </div>
+                      <button class="like-button active">
+                        <img class="heart" src="{% static 'social_app/images/icons/heart.png' %}" alt="" />
+                        <img class="heart-color" src="{% static 'social_app/images/icons/heart-color.png' %}" alt="" />
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <!-- widget single item end -->
+              <!-- widget single item start -->
+              {% include 'social_app/groups.html' %}
+              <!-- widget single item end -->
+            </aside>
+          </div>
 
-				{% include 'social_app/post_sharer_index.html' %}
+          {% include 'social_app/post_sharer_index.html' %}
 
-				<div class="col-lg-3 order-3">
-					<aside class="widget-area">
-						<!-- widget single item start -->
-						<div class="card widget-item">
-							<h4 class="widget-title">Recent Notifications</h4>
-							<div class="widget-body">
-								<ul class="like-page-list-wrapper">
-									<li class="unorder-list">
-										<!-- profile picture end -->
-										<div class="profile-thumb">
-											<a href="#">
-												<figure
-													class="profile-thumb-small">
-													<img
-														src="{% static 'social_app/images/profile/profile-35x35-6.jpg' %}"
-														alt="profile picture" />
-												</figure>
-											</a>
-										</div>
-										<!-- profile picture end -->
+          <div class="col-lg-3 order-3">
+            <aside class="widget-area">
+              <!-- widget single item start -->
+              <div class="card widget-item">
+                <h4 class="widget-title">Friend Requests</h4>
+                <div class="widget-body">
+                  <ul class="like-page-list-wrapper">
+                    {% for friend in inbox %}
+                      <li class="unorder-list">
+                        <!-- profile picture end -->
+                        <div class="profile-thumb">
+                          <a href="#">
+                            <figure class="profile-thumb-small">
+                              <img src="{% static 'social_app/images/profile/profile-35x35-6.jpg' %}" alt="profile picture" />
+                            </figure>
+                          </a>
+                        </div>
+                        <!-- profile picture end -->
+                        <div class="unorder-list-info">
+                          <h3 class="list-title"><a href="#">{{ friend.user.username }}</a> <a onclick="requestAccept(friendRequest.request_id)" href="">accept</a></h3>
+                          <p class="list-subtitle">{{ friend.created_at|timesince }} ago</p>
+                        </div>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                </div>
+              </div>
+              <!-- widget single item end -->
 
-										<div class="unorder-list-info">
-											<h3 class="list-title">
-												<a href="#"
-													>Any one can join with us if
-													you want</a
-												>
-											</h3>
-											<p class="list-subtitle">
-												25 min ago
-											</p>
-										</div>
-									</li>
-									<li class="unorder-list">
-										<!-- profile picture end -->
-										<div class="profile-thumb">
-											<a href="#">
-												<figure
-													class="profile-thumb-small">
-													<img
-														src="{% static 'social_app/images/profile/profile-35x35-4.jpg' %}"
-														alt="profile picture" />
-												</figure>
-											</a>
-										</div>
-										<!-- profile picture end -->
+              <!-- widget single item start -->
 
-										<div class="unorder-list-info">
-											<h3 class="list-title">
-												<a href="#"
-													>Any one can join with us if
-													you want</a
-												>
-											</h3>
-											<p class="list-subtitle">
-												39 min ago
-											</p>
-										</div>
-									</li>
-								</ul>
-							</div>
-						</div>
-						<!-- widget single item end -->
+              <!-- widget single item end -->
 
-						<!-- widget single item start -->
+              <!-- widget single item start -->
+              <div class="card widget-item">
+                <h4 class="widget-title">Friends Zone</h4>
+                <div class="widget-body">
+                  <ul class="like-page-list-wrapper">
+                    {% for user in users %}
+                      <li class="unorder-list">
+                        <!-- profile picture end -->
+                        <div class="profile-thumb">
+                          <a href="#">
+                            <figure class="profile-thumb-small">
+                              <img src="{% if user.profile.image %}{{ user.profile.image.url }}{% endif %}" alt="profile picture" />
+                            </figure>
+                          </a>
+                        </div>
+                        <!-- profile picture end -->
 
-						<!-- widget single item end -->
+                        <div class="unorder-list-info">
+                          <h3 class="list-title"><a href="">{{ user.username }}</a></h3>
+                          <p class="list-subtitle">
+                            <a href="#">10 mutual</a>
+                          </p>
+                        </div>
 
-						<!-- widget single item start -->
-						<div class="card widget-item">
-							<h4 class="widget-title">Friends Zone</h4>
-							<div class="widget-body">
-								<ul class="like-page-list-wrapper">
-									<li class="unorder-list">
-										<!-- profile picture end -->
-										<div class="profile-thumb">
-											<a href="#">
-												<figure
-													class="profile-thumb-small">
-													<img
-														src="{% static 'social_app/images/profile/profile-35x35-15.jpg' %}"
-														alt="profile picture" />
-												</figure>
-											</a>
-										</div>
-										<!-- profile picture end -->
+                        {% if user.request_exist and user.is_friend %}
+                          <button class="like-button fs-6">Friend</button>
+                        {% elif user.request_exist %}
+                          <button class="like-button fs-6">Cancel</button>
+                        {% else %}
+                          <button onclick="friendRequest('add', {{ request.user.id }}, {{ user.id }})" class="like-button fs-6">Add</button>
+                        {% endif %}
+                      </li>
+                    {% endfor %}
+                  </ul>
+                </div>
+              </div>
+              <!-- widget single item end -->
+            </aside>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+{% endblock %}
 
-										<div class="unorder-list-info">
-											<h3 class="list-title">
-												<a href="#">Ammeya Jakson</a>
-											</h3>
-											<p class="list-subtitle">
-												<a href="#">10 mutual</a>
-											</p>
-										</div>
-										<button class="like-button">
-											<img
-												class="heart"
-												src="{% static 'social_app/images/icons/heart.png' %}"
-												alt="heart-icon" />
-											<img
-												class="heart-color"
-												src="{% static 'social_app/images/icons/heart-color.png' %}"
-												alt="heart-icon-color" />
-										</button>
-									</li>
-								</ul>
-							</div>
-						</div>
-						<!-- widget single item end -->
-					</aside>
-				</div>
-			</div>
-		</div>
-	</div>
-</main>
-{% endblock content %}
+{% block extra_js %}
+  <script>
+    function friendRequest(type, user1, user2) {
+      fetch(`/friend-request/?type=${type}&user1=${user1}&user2=${user2}`)
+        .then((resp) => resp.json())
+        .then((data) => {
+          if (data.status == 'success') {
+            Swal.fire({
+              icon: 'success',
+              title: data.message,
+              showConfirmButton: false,
+              timer: 1500
+            }).then(() => {
+              location.reload()
+            })
+          }
+        })
+    }
+    function requestAccept(requestId) {
+      fetch(`/friend-request/accept/${requestId}/`, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': '{{ csrf_token }}',
+          'Content-Type': 'application/json'
+        }
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.status === 'success') {
+            
+            print(friendRequest.requestAccept)
+          }
+        })
+        .catch((error) => console.error('Error:', error))
+    }
+  </script>
+{% endblock %}
+
 <!-- Scroll to top start -->

@@ -7,7 +7,8 @@ from .models import (
     Post,
     Like,
     Comment,
-    SocialGroup
+    SocialGroup,
+    FriendRequest,
 )
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
@@ -20,14 +21,42 @@ def index(request):
     profile = Profile.objects.filter(user=request.user).first()
     groups = SocialGroup.objects.all()
     posts = Post.objects.order_by('-created_at')
+    users = User.objects.exclude(username=request.user.username)
+    friend_requests = FriendRequest.objects.all()
+    requests = friend_requests.filter(user=request.user)
+    for user in users:
+        is_in_loop = requests.filter(request_user=user).first()
+        if is_in_loop:
+            user.request_exist = True
+            user.is_friend = is_in_loop.accepted
+        else:
+            user.request_exist = False
+
     for post in posts:
         post.liked_by_user = post.is_liked_by_user(request.user)
+
+    print(request.user)
     context = {
         'posts': posts,
         'profile': profile,
         'groups': groups,
+        'users': users,
+        'inbox': friend_requests.filter(request_user=request.user),
     }
     return render(request, 'social_app/index.html', context)
+
+
+@login_required
+def friend_request(request):
+    print(request.GET)
+    if request.GET.get('type') == 'add':
+        request_user = get_object_or_404(User, id=request.GET.get('user2'))
+        inbox = FriendRequest(
+            user=request.user,
+            request_user=request_user
+        )
+        inbox.save()
+    return JsonResponse({'status': 'success', 'message': 'Friend request sent'})
 
 
 @login_required
@@ -35,6 +64,16 @@ def profile(request):
     groups = SocialGroup.objects.all()
     profile = Profile.objects.filter(user=request.user).first()
     posts = Post.objects.filter(user=request.user).order_by('-created_at')
+    users = User.objects.exclude(username=request.user.username)
+    friend_requests = FriendRequest.objects.all()
+    requests = friend_requests.filter(user=request.user)
+    for user in users:
+        is_in_loop = requests.filter(request_user=user).first()
+        if is_in_loop:
+            user.request_exist = True
+            user.is_friend = is_in_loop.accepted
+        else:
+            user.request_exist = False
     for post in posts:
         post.liked_by_user = post.is_liked_by_user(request.user)
     if request.method == 'POST':
@@ -57,6 +96,8 @@ def profile(request):
         "profile": profile,
         "posts": posts,
         'groups': groups,
+        'users': users,
+        'inbox': friend_requests.filter(request_user=request.user),
 
     }
     return render(request, 'social_app/profile.html', context)
@@ -85,24 +126,35 @@ def group(request, pk):
     has_joined = group.members.filter(username=request.user.username).exists()
     return render(request, 'social_app/group.html', {'group': group, 'has_joined': has_joined, 'posts': posts})
 
+
 def edit_group(request):
     return redirect("group", group.id)
+
 
 def join_group(request, pk):
     request_type = request.GET.get('type')
     group = get_object_or_404(SocialGroup, id=pk)
     if request_type == 'join':
         group.members.add(request.user)
-        message = "removed from"
+        message = "added to "
     else:
         group.members.remove(request.user)
-        message = "added to"
+        message = "removed from"
     return JsonResponse({'status': 'success', 'message': f'You have successfully been {message} the group'})
 
 
 def group_friends(request):
     members = SocialGroup.objects.all()
     return render(request, "social_app/group_friends.html", {'members': members})
+
+
+def request_accept(request, request_id):
+    friend_request = get_object_or_404(FriendRequest, id=request_id)
+    if not friend_request.accepted:
+        friend_request.accepted = True
+        friend_request.save()
+
+    return JsonResponse({'status': 'success'})
 
 
 @login_required
