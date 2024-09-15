@@ -82,7 +82,7 @@
                         </div>
                         <!-- profile picture end -->
                         <div class="unorder-list-info">
-                          <h3 class="list-title"><a href="#">{{ friend.user.username }}</a> <button onclick="friendRequest('accepted', {{ friend.user.id }}, '')" href="">accept</button></h3>
+                          <h3 class="list-title"><a href="#">{{ friend.username }}</a> <button onclick="friendRequest('accepted', {{ friend.user.id }},)">accept</button></h3>
                           <p class="list-subtitle">{{ friend.created_at|timesince }} ago</p>
                         </div>
                       </li>
@@ -92,13 +92,8 @@
               </div>
               <!-- widget single item end -->
 
-              <!-- widget single item start -->
-
-              <!-- widget single item end -->
-
-              <!-- widget single item start -->
               <div class="card widget-item">
-                <h4 class="widget-title">Friends Zone</h4>
+                <h4 class="widget-title">People you may know</h4>
                 <div class="widget-body">
                   <ul class="like-page-list-wrapper">
                     {% for user in users %}
@@ -121,18 +116,57 @@
                         </div>
 
                         {% if user.request_exist and user.is_friend %}
-                          <button class="like-button fs-6">Friend</button>
+                          <button class="like-button fs-6">Unfriend</button>
                         {% elif user.request_exist %}
-                          <button class="like-button fs-6">Cancel</button>
+                          <button onclick="friendRequest('cancel', {{ user.id }})" class="like-button fs-6">Cancel</button>
                         {% else %}
-                          <button onclick="friendRequest('add', {{ request.user.id }}, {{ user.id }})" class="like-button fs-6">Add</button>
+                          <button onclick="friendRequest('add', {{ user.id }})" class="like-button fs-6">Add</button>
                         {% endif %}
                       </li>
                     {% endfor %}
                   </ul>
                 </div>
               </div>
+
               <!-- widget single item end -->
+
+              <div class="card widget-item">
+                <h4 class="widget-title">Friends Zone</h4>
+                <div class="widget-body">
+                  <ul class="like-page-list-wrapper">
+                    {% for friend in friend_list %}
+                      <li class="unorder-list">
+                        <!-- profile picture end -->
+                        <div class="profile-thumb">
+                          <a href="#">
+                            <figure class="profile-thumb-small">
+                              <img src="{% if friend.profile.image %}{{ friend.profile.image.url }}{% endif %}" alt="profile picture" />
+                            </figure>
+                          </a>
+                        </div>
+                        <!-- profile picture end -->
+
+                        <div class="unorder-list-info">
+                          <h3 class="list-title">
+                            <a href="">
+                              {% if request.user.username != user.username %}
+                                {{ friend.user.username }}
+                              {% else %}
+                                {{ friend.request_user.username }}
+                              {% endif %}
+                            </a>
+                          </h3>
+                          <p class="list-subtitle">
+                            <a href="#">10 mutual</a>
+                          </p>
+                        </div>
+
+                        <button onclick="friendRequest('unfriend', {{ friend.id }})" class="like-button fs-6">Unfriend</button>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                </div>
+              </div>
             </aside>
           </div>
         </div>
@@ -143,8 +177,8 @@
 
 {% block extra_js %}
   <script>
-    function friendRequest(type, user1, user2) {
-      fetch(`/friend-request/?type=${type}&user1=${user1}&user2=${user2}`)
+    function friendRequest(type, user1) {
+      fetch(`/friend-request/?type=${type}&user1=${user1}`)
         .then((resp) => resp.json())
         .then((data) => {
           if (data.status == 'success') {

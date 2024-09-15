@@ -1,3 +1,19 @@
+# friends = friend_requests.filter(Q(user=request.user) | Q(
+#     request_user=request.user), accepted=True)
+# requests = friend_requests.filter(user=request.user)
+# for user in users:
+#     is_in_loop = requests.filter(request_user=user).first()
+#     friend = friend_requests.filter(
+#         user=user, request_user=request.user, accepted=True).first()
+#     if friend:
+#         user.request_exist = True
+#         user.is_friend = True
+#     elif is_in_loop:
+#         user.request_exist = True
+#         user.is_friend = is_in_loop.accepted
+#     else:
+#         user.request_exist = False
+#         user.is_friend = False
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout, authenticate
@@ -8,36 +24,29 @@ from .models import (
     Like,
     Comment,
     SocialGroup,
-    FriendRequest,
+    FriendRequest
 )
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
-
+from django.db.models import Q
 
 # Create your views here.
+
 
 @login_required
 def index(request):
     profile = Profile.objects.filter(user=request.user).first()
     groups = SocialGroup.objects.all()
     posts = Post.objects.order_by('-created_at')
+
     users = User.objects.exclude(username=request.user.username)
     friend_requests = FriendRequest.objects.all()
-    requests = friend_requests.filter(user=request.user)
     for user in users:
-        is_in_loop = requests.filter(request_user=user).first()
+        ifsended = friend_requests.filter(senders=request.user, recievers=user, accepted=False).exists()
         friend = friend_requests.filter(
-            user=user, request_user=request.user, accepted=True).first()
-        if friend:
-            user.request_exist = True
-            user.is_friend = True
-        elif is_in_loop:
-            user.request_exist = True
-            user.is_friend = is_in_loop.accepted
-        else:
-            print('three')
-            user.request_exist = False
-            user.is_friend = False
+            Q(senders=request.user, recievers=user) | Q(), accepted=True).exists()
+        user.request_exists = ifsended
+        user.is_friend = friend
 
     for post in posts:
         post.liked_by_user = post.is_liked_by_user(request.user)
@@ -47,34 +56,57 @@ def index(request):
         'profile': profile,
         'groups': groups,
         'users': users,
-        'inbox': friend_requests.filter(request_user=request.user, accepted=False),
+        # 'friend_list': friends,
+        'inbox': friend_requests.filter(reciever=request.user, accepted=False),
     }
     return render(request, 'social_app/index.html', context)
 
 
 @login_required
 def friend_request(request):
-    print(request.GET)
-    if request.GET.get('type') == 'add':
-        request_user = get_object_or_404(User, id=request.GET.get('user2'))
-        inbox = FriendRequest(
-            user=request.user,
-            request_user=request_user
+    if request.GET.get('type') == "add":
+        request_user = get_object_or_404(
+            User, id=request.GET.get('user1')).first()
+        requests = FriendRequest(
+            sender=request.user,
+            reciever=request_user
         )
-        inbox.save()
-        return JsonResponse({'status': 'success', 'message': 'Friend request sent'}, status=200)
+        requests.save()
+        return JsonResponse({'status': 'success', 'message': 'working good'}, status=200)
 
-    elif request.GET.get('type') == 'accepted':
-        request_user = get_object_or_404(User, id=request.GET.get('user1'))
-        inbox = FriendRequest.objects.filter(user=request_user, request_user=request.user).first()
-        inbox.accepted = True
-        inbox.save()
-        return JsonResponse({'status': 'success', 'message': 'Friend Request Accepted'}, status=200)
+    # if request.GET.get('type') == 'add':
+    #     request_user = get_object_or_404(User, id=request.GET.get('user1'))
+    #     inbox = FriendRequest(
+    #         user=request.user,
+    #         request_user=request_user
+    #     )
+    #     inbox.save()
+    #     return JsonResponse({'status': 'success', 'message': 'Friend request sent'}, status=200)
 
-    return JsonResponse({'status': 'failed', 'message': 'Something Went Wrong'}, status=301)
+    # elif request.GET.get('type') == 'accepted':
+    #     request_user = get_object_or_404(User, id=request.GET.get('user1'))
+    #     inbox = FriendRequest.objects.filter(
+    #         user=request_user, request_user=request.user).first()
+    #     inbox.accepted = True
+    #     inbox.save()
+    #     return JsonResponse({'status': 'success', 'message': 'Friend Request Accepted'}, status=200)
 
+    # elif request.GET.get('type') == 'cancel':
+    #     request_user = get_object_or_404(User, id=request.GET.get('user1'))
+    #     inbox = FriendRequest.objects.filter(
+    #         user=request.user, request_user=request_user).first()
+    #     if inbox:
+    #         inbox.delete()
+    #     return JsonResponse({'status': 'success', 'message': 'Friend Request Cancelled'}, status=200)
 
-    
+    # elif request.GET.get('type') == 'unfriend':
+    #     request_user = get_object_or_404(User, id=request.GET.get('user1'))
+    #     inbox = FriendRequest.objects.filter(
+    #         user=request.user, request_user=request_user).first()
+    #     if inbox:
+    #         inbox.delete()
+    #     return JsonResponse({'status': 'success', 'message': f'You unfriend {request_user.username}'}, status=200)
+    return JsonResponse({'status': 'success', 'message': 'Something Went Wrong'}, status=200)
 
 
 @login_required
@@ -82,16 +114,6 @@ def profile(request):
     groups = SocialGroup.objects.all()
     profile = Profile.objects.filter(user=request.user).first()
     posts = Post.objects.filter(user=request.user).order_by('-created_at')
-    users = User.objects.exclude(username=request.user.username)
-    friend_requests = FriendRequest.objects.all()
-    requests = friend_requests.filter(user=request.user)
-    for user in users:
-        is_in_loop = requests.filter(request_user=user).first()
-        if is_in_loop:
-            user.request_exist = True
-            user.is_friend = is_in_loop.accepted
-        else:
-            user.request_exist = False
     for post in posts:
         post.liked_by_user = post.is_liked_by_user(request.user)
     if request.method == 'POST':
@@ -114,8 +136,7 @@ def profile(request):
         "profile": profile,
         "posts": posts,
         'groups': groups,
-        'users': users,
-        'inbox': friend_requests.filter(request_user=request.user),
+
 
     }
     return render(request, 'social_app/profile.html', context)

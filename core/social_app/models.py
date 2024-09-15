@@ -88,9 +88,11 @@ class SocialGroup(DateTimeModel):
 
 
 class FriendRequest(DateTimeModel):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="friend_requests")
-    request_user = models.ForeignKey(User, on_delete=models.CASCADE)
+    senders = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="sender")
+    recievers = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="reciever")
     accepted = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.user.username} {str(self.accepted)}"
+        return f"{self.reciever.username} {str(self.accepted)}"
